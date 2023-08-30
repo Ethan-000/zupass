@@ -1,9 +1,4 @@
-import {
-  BarretenbergApiAsync,
-  Crs,
-  RawBuffer,
-  newBarretenbergApiAsync
-} from "@aztec/bb.js/dest/node/index.js";
+import { loadModule } from "@aztec/bb.js";
 import { Ptr } from "@aztec/bb.js/dest/node/types";
 import {
   ArgumentTypeName,
@@ -66,7 +61,7 @@ export class NoirPCD implements PCD<NoirPCDClaim, NoirPCDProof> {
 }
 
 interface CircuitParams {
-  api: BarretenbergApiAsync;
+  api: Barretenberg;
   acirComposer: Ptr;
   circuitSize: number;
 }
@@ -74,7 +69,11 @@ let initParams: CircuitParams | undefined = undefined;
 export async function init(args: NoirPCDInitArgs): Promise<void> {
   SemaphoreSignaturePCDPackage.init?.(args);
   const circuitDecompressed = getBytecode(args.circuitPath);
-  const api = await newBarretenbergApiAsync();
+
+  const { Barretenberg, RawBuffer, Crs } = await loadModule();
+
+  const api = await Barretenberg.new();
+
 
   const [total] = await api.acirGetCircuitSizes(circuitDecompressed);
   const subgroupSize = Math.pow(2, Math.ceil(Math.log2(total)));
@@ -156,6 +155,7 @@ export async function prove(args: NoirPCDArgs): Promise<NoirPCD> {
 }
 
 export async function verify(pcd: NoirPCD): Promise<boolean> {
+
   if (!initParams) {
     throw new Error(
       "cannot verify Noir Circuit proof: init has not been called yet"
@@ -167,7 +167,6 @@ export async function verify(pcd: NoirPCD): Promise<boolean> {
   const proofValid = await SemaphoreSignaturePCDPackage.verify(
     semaphoreSignature
   );
-
   // the semaphore signature of the proof must be valid
   if (!proofValid) {
     return false;
