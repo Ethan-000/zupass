@@ -6,8 +6,8 @@ import {
 } from "@pcd/semaphore-identity-pcd";
 import { Identity } from "@semaphore-protocol/identity";
 import assert from "assert";
-import * as path from "path";
 import "mocha";
+import * as path from "path";
 import { NoirPCDPackage } from "../src/NoirPCD";
 
 const circuitPath = path.join(
@@ -22,7 +22,7 @@ const zkeyFilePath = path.join(__dirname, "../artifacts/16.zkey");
 const wasmFilePath = path.join(__dirname, "../artifacts/16.wasm");
 
 describe("Noir PCD", function () {
-  beforeAll(async function () {
+  before(async function () {
     await NoirPCDPackage.init?.({
       zkeyFilePath,
       wasmFilePath,
@@ -55,6 +55,7 @@ describe("Noir PCD", function () {
       }
     });
 
-    assert(await NoirPCDPackage.verify(ethereumPCD));
+    const verified = await NoirPCDPackage.verify(ethereumPCD);
+    assert(verified);
   });
 });

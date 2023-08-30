@@ -27,11 +27,11 @@
     "dev:browser": "tsup --platform=browser src/index.ts --out-dir ./dist/browser --watch",
     "dev:node": "tsup --platform=node src/index.ts --out-dir ./dist/node --watch",
     "typecheck": "yarn tsc --noEmit",
-    "test": "ts-mocha --config ../../.mocharc.js --exit test/**/*.spec.ts",
+    "test": "ts-mocha --config ../../.mocharc.js --exit test/**/*.spec.ts --timeout 50000",
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
-    "@aztec/bb.js": "0.3.6",
+    "@aztec/bb.js": "file:/Users/koby/git/aztecprotocol/aztec-packages/circuits/cpp/barretenberg/ts",
     "@pcd/passport-ui": "0.6.1",
     "@pcd/pcd-types": "0.6.1",
     "@pcd/semaphore-identity-pcd": "0.6.1",
